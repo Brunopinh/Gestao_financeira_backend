@@ -9,9 +9,9 @@ def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, 
     try:
         with conn.cursor() as cursor:
             insert_query = sql.SQL("""
-                INSERT INTO usuarios (nome, email, telefone, login, senha, dt_nascimento)
+                INSERT INTO usuario (nome, email, telefone, login, senha, dt_nascimento)
                 VALUES (%s, %s, %s, %s, %s, %s)
-                RETURNING id
+                RETURNING id_usuario
             """)
             cursor.execute(insert_query, (nome, email, telefone, login, senha, dt_nascimento))
             usuario_id = cursor.fetchone()[0]
@@ -19,6 +19,30 @@ def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, 
             return {"id": usuario_id, "mensagem": "Usuário criado com sucesso"}
     except Exception as e:
         conn.rollback()
+        return {"erro": str(e)}
+    finally:
+        conn.close()
+
+def autenticacao_usuario(login: str, senha: str):
+    print("Iniciando autenticação do usuário")
+    print(f"Login: {login}, Senha: {senha}")
+    conn = get_db_connection()
+    if conn is None:
+        return {"erro": "Não foi possível conectar ao banco de dados."}
+
+    try:
+        with conn.cursor() as cursor:
+            select_query = sql.SQL("""
+                SELECT id_usuario, nome FROM usuario
+                WHERE login = %s AND senha = %s
+            """)
+            cursor.execute(select_query, (login, senha))
+            usuario = cursor.fetchone()
+            if usuario:
+                return {"id": usuario[0], "nome": usuario[1], "mensagem": "Usuário autenticado com sucesso"}
+            else:
+                return {"erro": "Email ou senha incorretos"}
+    except Exception as e:
         return {"erro": str(e)}
     finally:
         conn.close()

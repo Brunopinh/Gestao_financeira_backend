@@ -8,3 +8,7 @@ class UsuarioCreate(BaseModel):
     login: str
     senha: str
     dt_nascimento: date
+
+class UsuarioLogin(BaseModel):
+    login: str
+    senha: str
