@@ -1,6 +1,32 @@
 from app.db.database import get_db_connection
 from psycopg2 import sql
 
+def get_user_by_email(email: str):
+    conn = get_db_connection()
+    if conn is None:
+        return None
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT id_usuario, nome, email FROM usuario
+                WHERE email = %s
+            """, (email,))
+            usuario = cursor.fetchone()
+            if usuario:
+                return {
+                    "id": usuario[0],
+                    "nome": usuario[1],
+                    "email": usuario[2]
+                }
+            return None
+    except Exception as e:
+        # Aqui você pode logar o erro se quiser
+        return None
+    finally:
+        conn.close()
+
+
 def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str):
     conn = get_db_connection()
     if conn is None:
