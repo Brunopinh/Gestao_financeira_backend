@@ -7,4 +7,4 @@ def registrar_novo_usuario(usuario: UsuarioCreate):
     if usuario_existente:
         return {"erro": "E-mail já cadastrado"}
     # Aqui você pode validar, verificar se e-mail já existe, etc.
-    return criar_usuario(usuario.nome, usuario.email, usuario.telefone, usuario.login, usuario.senha, usuario.dt_nascimento)
+    return criar_usuario(usuario.nome, usuario.email, usuario.telefone, usuario.login, usuario.senha, usuario.dt_nascimento, usuario.cpf)

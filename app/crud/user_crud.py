@@ -27,7 +27,7 @@ def get_user_by_email(email: str):
         conn.close()
 
 
-def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str):
+def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str, cpf: str):
     conn = get_db_connection()
     if conn is None:
         return {"erro": "Não foi possível conectar ao banco de dados."}
@@ -35,11 +35,11 @@ def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, 
     try:
         with conn.cursor() as cursor:
             insert_query = sql.SQL("""
-                INSERT INTO usuario (nome, email, telefone, login, senha, dt_nascimento)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO usuario (nome, email, telefone, login, senha, dt_nascimento, cpf)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 RETURNING id_usuario
             """)
-            cursor.execute(insert_query, (nome, email, telefone, login, senha, dt_nascimento))
+            cursor.execute(insert_query, (nome, email, telefone, login, senha, dt_nascimento, cpf))
             usuario_id = cursor.fetchone()[0]
             conn.commit()
             return {"id": usuario_id, "mensagem": "Usuário criado com sucesso"}
