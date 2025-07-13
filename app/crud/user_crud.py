@@ -1,5 +1,5 @@
-from app.db.database import get_db_connection
-from psycopg2 import sql
+from app.db.database import get_db_connection #Conexão com o BD
+from psycopg2 import sql # Importante para trabalhar com o BD POSTGRES
 
 def get_user_by_email(email: str):
     conn = get_db_connection()
@@ -28,30 +28,30 @@ def get_user_by_email(email: str):
 
 
 def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str):
-    conn = get_db_connection()
+    conn = get_db_connection() #tenta abrir uma conexão com o banco
     if conn is None:
-        return {"erro": "Não foi possível conectar ao banco de dados."}
-
+        return {"erro": "Não foi possível conectar ao banco de dados."} 
+    #query (cria uma consuta SQL para inserir um novo usuario)
     try:
         with conn.cursor() as cursor:
-            insert_query = sql.SQL("""
+            insert_query = sql.SQL("""   
                 INSERT INTO usuario (nome, email, telefone, login, senha, dt_nascimento)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s) 
                 RETURNING id_usuario
-            """)
+            """) #values os dados que serão inseridos #%s usado para criar marcadores e consulta segura
             cursor.execute(insert_query, (nome, email, telefone, login, senha, dt_nascimento))
-            usuario_id = cursor.fetchone()[0]
-            conn.commit()
-            return {"id": usuario_id, "mensagem": "Usuário criado com sucesso"}
+            usuario_id = cursor.fetchone()[0] #ID 1, 2, 3, ETC... #recebe como parametro o cursor
+            conn.commit() 
+            return {"id": usuario_id, "mensagem": "Usuário criado com sucesso"} 
     except Exception as e:
-        conn.rollback()
+        conn.rollback() #se der erro, desfaz a transação
         return {"erro": str(e)}
     finally:
         conn.close()
 
 def autenticacao_usuario(login: str, senha: str):
     print("Iniciando autenticação do usuário")
-    print(f"Login: {login}, Senha: {senha}")
+    print(f"Login: {login}, Senha: {senha}") #mostra o login e senha recebidos
     conn = get_db_connection()
     if conn is None:
         return {"erro": "Não foi possível conectar ao banco de dados."}
@@ -65,10 +65,11 @@ def autenticacao_usuario(login: str, senha: str):
             cursor.execute(select_query, (login, senha))
             usuario = cursor.fetchone()
             if usuario:
-                return {"id": usuario[0], "nome": usuario[1], "mensagem": "Usuário autenticado com sucesso"}
+                return {"id": usuario[0], "nome": usuario[1], "mensagem": "Usuário autenticado com sucesso!"}
             else:
-                return {"erro": "Email ou senha incorretos"}
+                return {"erro": "Email ou senha incorretos!"} #se errar usuario ou senha
     except Exception as e:
         return {"erro": str(e)}
     finally:
         conn.close()
+

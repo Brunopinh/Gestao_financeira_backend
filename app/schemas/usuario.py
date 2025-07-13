@@ -1,8 +1,8 @@
 from pydantic import BaseModel, EmailStr
-from datetime import date
-
-class UsuarioCreate(BaseModel):
-    nome: str
+from datetime import date  #datetime biblioteca para de data 
+ 
+class UsuarioCreate(BaseModel):   #criação de usuario, chama a API (os dados precisar ser fornecidos)
+    nome: str   #str texto
     email: EmailStr
     telefone: str
     login: str
