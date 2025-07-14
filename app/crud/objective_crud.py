@@ -1,5 +1,6 @@
 from app.db.database import get_db_connection # conexão com o BD
 from psycopg2 import sql # Trabalha com o BD postgres
+from fastapi import Header, HTTPException
 
 def criar_objetivo(descricao: str, vlr_objetivo: float, dt_inicial: str, dt_limite: str, id_usuario: int):
     conn = get_db_connection() 
@@ -9,9 +10,10 @@ def criar_objetivo(descricao: str, vlr_objetivo: float, dt_inicial: str, dt_limi
     #values os dados que serao inseridos #%s marcar uma consulta sagura
     try:
         with conn.cursor() as cursor:
+            
             insert_query = sql.SQL("""
                 INSERT INTO objetivo (descricao, vlr_objetivo, dt_inicial, dt_limite, id_usuario)
-                VALUES (%s, %s, %s, %s, %s, %s) 
+                VALUES (%s, %s, %s, %s, %s) 
                 RETURNING id_objetivo
             """)
             cursor.execute(insert_query, (descricao, vlr_objetivo, dt_inicial, dt_limite,id_usuario)) # id_usuario deve ser passado como argumento
@@ -48,26 +50,38 @@ def listar_objetivos():
         conn.close()
 
 def atualizar_objetivo(id_objetivo: int, descricao: str, vlr_objetivo: float, dt_inicial: str, dt_limite: str, id_usuario: int):
-    conn = get_db_connection() # tenta abrir uma conexão com o banco
+    conn = get_db_connection()  # tenta abrir uma conexão com o banco
     if conn is None:
         return {"erro": "Não foi possível conectar ao banco de dados."}
-    # Query para atualizar um objetivo existente
+
+    print(f"\nAtualizando objetivo: \nid_objetivo: {id_objetivo}, id_usuario: {id_usuario}, descrição: {descricao}, valor: {vlr_objetivo}, dt_inicial: {dt_inicial}, dt_limite: {dt_limite}")
+
     try:
         with conn.cursor() as cursor:
             update_query = sql.SQL("""
                 UPDATE objetivo
                 SET descricao = %s, vlr_objetivo = %s, dt_inicial = %s, dt_limite = %s
-                WHERE id_objetivo = %s  AND id_usuario = %s
+                WHERE id_objetivo = %s AND id_usuario = %s
             """)
-            cursor.execute(update_query, (descricao, vlr_objetivo, dt_inicial, dt_limite, id_objetivo, id_usuario)) # id_usuario deve ser passado como argumento
+
+            cursor.execute(update_query, (
+                descricao,
+                vlr_objetivo,
+                dt_inicial,
+                dt_limite,
+                id_objetivo,
+                id_usuario
+            ))
             conn.commit()
             return {"mensagem": "Objetivo atualizado com sucesso"}
 
     except Exception as e:
-        conn.rollback() # se der erro, desfaz a transação
+        print("Erro ao atualizar objetivo:", e)  # Mostra o erro no terminal
+        conn.rollback()  # se der erro, desfaz a transação
         return {"erro": str(e)}
     finally:
-        conn.close() # fecha a conexão com o banco de dados     
+        conn.close()  # fecha a conexão com o banco de dados
+    
 
 def excluir_objetivo(id_objetivo: int):
     conn = get_db_connection() # tenta abrir uma conexão com o banco
@@ -88,4 +102,9 @@ def excluir_objetivo(id_objetivo: int):
         conn.rollback()
         print("Erro ao excluir objetivo:", e)  # <- Mostra o erro no terminal
     return {"erro": str(e)}
-  
+
+
+def obter_usuario_logado(x_user_id: str = Header(None)):
+    if not x_user_id:
+        raise HTTPException(status_code=401, detail="Usuário não autenticado")
+    return {"id": int(x_user_id)}

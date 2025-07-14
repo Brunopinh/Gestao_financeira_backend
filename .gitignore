@@ -1,0 +1,63 @@
+# Arquivos de ambiente
+.env
+*.env
+
+# Diretórios de dependências e ambientes virtuais
+venv/
+env/
+ENV/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Cache de pacotes
+pip-wheel-metadata/
+*.egg-info/
+*.egg
+dist/
+build/
+
+# VSCode e editores
+.vscode/
+.idea/
+*.swp
+
+# Logs e temporários
+*.log
+*.tmp
+*.bak
+
+# Banco de dados SQLite
+*.sqlite3
+*.db
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de teste e cobertura
+.coverage
+.tox/
+htmlcov/
+.pytest_cache/
+.cache/
+
+# Arquivos do sistema operacional
+desktop.ini
+
+# Docker
+**/docker-compose.override.yml
+**/Dockerfile.*
+**/.dockerignore
+
+# Arquivos de exportações ou relatórios
+*.xlsx
+*.csv
+*.pdf
+*.zip
+*.tar.gz
+
+# Node (caso use alguma lib JS/TS no backend)
+node_modules/

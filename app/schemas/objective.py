@@ -8,6 +8,12 @@ class ObjectiveCreate(BaseModel):
     descricao: str
     id_usuario: int
     
+class ObjetivoUpdate(BaseModel):
+    descricao: str
+    dt_inicial: date
+    dt_limite: date
+    vlr_objetivo: float
+    
 
 
 
