@@ -26,6 +26,31 @@ def get_user_by_email(email: str):
     finally:
         conn.close()
 
+def get_user_by_cpf(cpf: str):
+    conn = get_db_connection()
+    if conn is None:
+        return None
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT id_usuario, nome, email FROM usuario
+                WHERE cpf = %s
+            """, (cpf,))
+            usuario = cursor.fetchone()
+            if usuario:
+                return {
+                    "id": usuario[0],
+                    "nome": usuario[1],
+                    "email": usuario[2]
+                }
+            return None
+    except Exception as e:
+        # Aqui você pode logar o erro se quiser
+        return None
+    finally:
+        conn.close()
+
 
 def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str, cpf: str):
     conn = get_db_connection()
