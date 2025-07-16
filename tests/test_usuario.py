@@ -1,57 +1,70 @@
+from dotenv import load_dotenv
+from app.db.database import get_db_connection
+
 from fastapi.testclient import TestClient
-from app.main import app  # importa seu app FastAPI
+from app.main import app
+import os
 
 client = TestClient(app)
 
-# def test_criar_usuario_com_sucesso():
-#     response = client.post("/api/v1/auth/register", json={
-#         "nome": "Maria Teste",
-#         "email": "pedro@email.com",
-#         "telefone": "11988887777",
-#         "login": "mariateste",
-#         "senha": "teste123",
-#         "dt_nascimento": "1995-03-15",
-#         "cpf": "42984119070"
-#     })
-#     assert response.status_code == 201
-#     assert "id" in response.json()
+
+def test_criar_usuario_com_sucesso():
+    response = client.post("/api/v1/auth/register", json={
+        "nome": "Teste Usuário",
+        "email": "testeusuario@example.com",
+        "telefone": "11999998888",
+        "login": "testeusuario",
+        "senha": "senha123",
+        "dt_nascimento": "1990-01-01",
+        "cpf": "12345678901"
+    })
+
+    print("Status:", response.status_code)
+    print("Resposta:", response.json())
+
+    assert response.status_code == 201
+    json_response = response.json()
+    assert "id" in json_response
+    assert "mensagem" in json_response
+    assert json_response["mensagem"] == "Usuário criado com sucesso"
+
     
-# def test_criar_usuario_com_cpf_valido():
-#     response = client.post("/api/v1/auth/register", json={
-#         "nome": "João CPF",
-#         "email": "joaocpf@email.com",
-#         "telefone": "11999998888",
-#         "login": "joaocpf",
-#         "senha": "senha123",
-#         "dt_nascimento": "1990-05-10",
-#         "cpf": "12345678901"
-#     })
-#     assert response.status_code == 201
-#     assert "id" in response.json()
+def test_criar_usuario_com_cpf_valido():
+    response = client.post("/api/v1/auth/register", json={
+        "nome": "João CPF",
+        "email": "joaocpf@email.com",
+        "telefone": "11999998888",
+        "login": "joaocpf",
+        "senha": "senha123",
+        "dt_nascimento": "1990-05-10",
+        "cpf": "12345678901"
+    })
+    assert response.status_code == 201
+    assert "id" in response.json()
 
-# def test_criar_usuario_com_cpf_curto():
-#     response = client.post("/api/v1/auth/register", json={
-#         "nome": "João CPF Curto",
-#         "email": "joaocpfcurto@email.com",
-#         "telefone": "11988887777",
-#         "login": "joaocurto",
-#         "senha": "senha123",
-#         "dt_nascimento": "1991-01-01",
-#         "cpf": "12345"
-#     })
-#     assert response.status_code == 422
+def test_criar_usuario_com_cpf_curto():
+    response = client.post("/api/v1/auth/register", json={
+        "nome": "João CPF Curto",
+        "email": "joaocpfcurto@email.com",
+        "telefone": "11988887777",
+        "login": "joaocurto",
+        "senha": "senha123",
+        "dt_nascimento": "1991-01-01",
+        "cpf": "12345"
+    })
+    assert response.status_code == 422
 
-# def test_criar_usuario_com_cpf_invalido_caracteres():
-#     response = client.post("/api/v1/auth/register", json={
-#         "nome": "João CPF Ruim",
-#         "email": "joaoruim@email.com",
-#         "telefone": "11912312312",
-#         "login": "joaoruim",
-#         "senha": "senha123",
-#         "dt_nascimento": "1992-03-02",
-#         "cpf": "abc12345678"  # inválido por conter letras
-#     })
-#     assert response.status_code == 422
+def test_criar_usuario_com_cpf_invalido_caracteres():
+    response = client.post("/api/v1/auth/register", json={
+        "nome": "João CPF Ruim",
+        "email": "joaoruim@email.com",
+        "telefone": "11912312312",
+        "login": "joaoruim",
+        "senha": "senha123",
+        "dt_nascimento": "1992-03-02",
+        "cpf": "abc12345678"  # inválido por conter letras
+    })
+    assert response.status_code == 422
 
 def test_criar_usuario_com_cpf_duplicado():
     cpf = "99999999999"
@@ -81,13 +94,13 @@ def test_criar_usuario_com_cpf_duplicado():
     assert res2.status_code == 400
     assert res2.json()["detail"] == "CPF já cadastrado"
 
-# def test_criar_usuario_dados_invalidos():
-#     response = client.post("/api/v1/auth/register", json={
-#         "nome": "Ana",
-#         "email": "email_invalido",
-#         "telefone": "sem_telefone",
-#         "login": "",
-#         "senha": "123",
-#         "dt_nascimento": "não é data"
-#     })
-#     assert response.status_code == 422  
+def test_criar_usuario_dados_invalidos():
+    response = client.post("/api/v1/auth/register", json={
+        "nome": "Ana",
+        "email": "email_invalido",
+        "telefone": "sem_telefone",
+        "login": "",
+        "senha": "123",
+        "dt_nascimento": "não é data"
+    })
+    assert response.status_code == 422  

@@ -30,13 +30,3 @@ def get_db_connection():
         # Você pode querer levantar uma exceção aqui ou lidar com o erro de outra forma
         return None
 
-# Exemplo de uso:
-if __name__ == "__main__":
-    connection = get_db_connection()
-    if connection:
-        # Você pode usar a conexão aqui
-        # Ex: cursor = connection.cursor()
-        #     cursor.execute("SELECT 1;")
-        #     print(cursor.fetchone())
-        connection.close()
-        print("Conexão com o banco de dados fechada.")

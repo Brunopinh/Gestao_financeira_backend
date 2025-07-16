@@ -51,7 +51,6 @@ def get_user_by_cpf(cpf: str):
     finally:
         conn.close()
 
-
 def criar_usuario(nome: str, email: str, telefone: str, login: str, senha: str, dt_nascimento: str, cpf: str):
     conn = get_db_connection()
     if conn is None:
