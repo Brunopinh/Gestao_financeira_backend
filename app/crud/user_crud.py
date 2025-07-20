@@ -2,7 +2,7 @@ from app.db.database import get_db_connection #Conexão com o BD
 from psycopg2 import sql # Importante para trabalhar com o BD POSTGRES
 
 def get_user_by_email(email: str):
-    conn = get_db_connection()
+    conn = get_db_connection() # faz a conexao com o banco
     if conn is None:
         return None
 

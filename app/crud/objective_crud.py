@@ -37,7 +37,7 @@ def listar_objetivos():
         with conn.cursor() as cursor:
             select_query = sql.SQL("""
                 SELECT id_objetivo, descricao, vlr_objetivo, dt_inicial, dt_limite, id_usuario
-                FROM objetivo                
+                FROM objetivo            
             """)
             cursor.execute(select_query)
             objetivos = cursor.fetchall()
